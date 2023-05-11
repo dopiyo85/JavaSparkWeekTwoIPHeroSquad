@@ -30,9 +30,9 @@ Cooperative or Competitive Gameplay: Some Hero Squad games may offer cooperative
 
 Overall, Hero Squad games provide an immersive and engaging experience, allowing players to immerse themselves in a world of superheroes, teamwork, and strategic decision-making. The game combines elements of role-playing, strategy, and action to create an exciting and dynamic gameplay experience.
 
-BDD (Behavior-Driven Development)
+## BDD (Behavior-Driven Development)
 
-Feature: Recruit Heroes
+**Feature: Recruit Heroes**
 
 Scenario: Successfully recruit a hero into the squad
 Given the player is logged in and on the recruit page
@@ -46,7 +46,7 @@ And the hero is already in the squad roster
 When the player tries to recruit the same hero again
 Then the player receives an error message indicating that the hero is already recruited
 
-Feature: Squad Formation
+**Feature: Squad Formation**
 
 Scenario: Assign heroes to the squad
 Given the player is logged in and on the squad formation page
@@ -61,7 +61,7 @@ And the squad has reached the maximum size limit
 When the player tries to assign another hero to the squad
 Then the player receives an error message indicating that the squad is already full
 
-Feature: Missions and Challenges
+**Feature: Missions and Challenges**
 
 Scenario: Complete a mission successfully
 Given the player is on the mission page
@@ -79,7 +79,7 @@ Then the player receives mission details and objectives
 And the squad struggles in battles and fails to complete the objectives
 And the player receives a failure message
 
-Setup/Installation Requirements
+##Setup/Installation Requirements
 
 To run the Hero Squad game on your local machine, you need to have the following prerequisites installed:
 
@@ -93,8 +93,8 @@ Once you have the necessary prerequisites installed, follow these steps to set u
 
 Clone the repository: Open your terminal or Git bash and navigate to the directory where you want to clone the project. Then, run the following command:
 
-bash
-Copy code
+Go to git bash and 
+Copy code:
 git clone https://github.com/dopiyo85/JavaSparkWeekTwoIPHeroSquad.git
 This will create a local copy of the project on your machine.
 
@@ -108,22 +108,22 @@ Access the application: Open your web browser and enter the following URL: http:
 
 That's it! You have successfully set up and installed the Hero Squad game on your local machine. You can now start recruiting heroes, forming squads, and playing the game.
 
-To access the code for learning:
+**To access the code for learning:**
 
 1. Clone the repository: `git clone https://github.com/dopiyo85/JavaSparkWeekTwoIPHeroSquad.git
 2. Open the cloned code on IntelliJ IDEA.
 3. Run the code to view the output.
 
-Known Bugs
+## Known Bugs
 
 There are no known bugs in this project.
 
-Technologies Used
+## Technologies Used
 
 - Java programming language
 - IntelliJ IDEA
 
-Support and Contact Details
+## Support and Contact Details
 
 If you need any assistance, have questions, ideas, or concerns, kindly contact me through email: dopiyo@gmail.com. You can also make a contribution to the code or seek assistance for the app/project.
 
@@ -131,8 +131,8 @@ GitHub URL Link
 
 To view the project, visit the GitHub repository:(https://github.com/dopiyo85/JavaSparkWeekTwoIPHeroSquad.git)
 
-License
+## License
 
 The project is licensed under GPL (General Public License).
 
-Copyright (c) 2023 Diana Opiyo
+Copyright (c) 2023 **Diana Opiyo**
