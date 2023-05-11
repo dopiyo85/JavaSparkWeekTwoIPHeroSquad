@@ -79,7 +79,7 @@ Then the player receives mission details and objectives
 And the squad struggles in battles and fails to complete the objectives
 And the player receives a failure message
 
-## Setup/Installation Requirements
+## Setup/Installation Requirements 
 
 To run the Hero Squad game on your local machine, you need to have the following prerequisites installed:
 
