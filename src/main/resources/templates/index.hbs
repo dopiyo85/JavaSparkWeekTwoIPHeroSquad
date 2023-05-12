@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <title>Hero Squad</title>
+</head>
+<body>
+<h1>Welcome to Hero Squad!</h1>
+
+<h2>Heroes</h2>
+<ul>
+    {{#each heroes}}
+        <li>
+            <strong>Name:</strong> {{name}} <br>
+            <strong>Age:</strong> {{age}} <br>
+            <strong>Special Power:</strong> {{specialPower}} <br>
+            <strong>Weakness:</strong> {{weakness}}
+        </li>
+    {{/each}}
+</ul>
+
+<h2>Squads</h2>
+<ul>
+    {{#each squads}}
+        <li>
+            <strong>Name:</strong> {{name}} <br>
+            <strong>Cause:</strong> {{cause}}
+        </li>
+    {{/each}}
+</ul>
+</body>
+</html>
