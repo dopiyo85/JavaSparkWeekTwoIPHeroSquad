@@ -1,12 +1,11 @@
 package org.javasparkips.app.model;
 
 public class Squad {
-    private int maxSize;
+    private final static int maxSize = 10;
     private String name;
     private String cause;
 
-    public Squad(int maxSize, String name, String cause) {
-        this.maxSize = maxSize;
+    public Squad(String name, String cause) {
         this.name = name;
         this.cause = cause;
     }
@@ -15,10 +14,6 @@ public class Squad {
 
     public int getMaxSize() {
         return maxSize;
-    }
-
-    public void setMaxSize(int maxSize) {
-        this.maxSize = maxSize;
     }
 
     public String getName() {
@@ -37,4 +32,3 @@ public class Squad {
         this.cause = cause;
     }
 }
-
