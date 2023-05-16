@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Superhero Details</title>
+    <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+<body class="scheme-2">
+
+<div class="container">
+    <h1>Superhero Details</h1>
+
+    <div class="hero-card">
+        <h2>{{hero.name}}</h2>
+        <p>Age: {{hero.age}}</p>
+        <p>Power: {{hero.power}}</p>
+        <p>Weakness: {{hero.weakness}}</p>
+
+        {{#if isInSquad}}
+            <p>Assigned to Squad: {{squadName}}</p>
+        {{else}}
+            <p>Not assigned to any squad.</p>
+        {{/if}}
+
+        {{#if isInSquad}}
+            <form action="/squads/{{squadId}}/heroes/{{hero.id}}" method="POST">
+                <button class="button" type="submit">Remove from Squad</button>
+            </form>
+        {{else}}
+            <form action="/squads/{{hero.id}}" method="POST">
+                <button class="button" type="submit">Assign to Squad</button>
+            </form>
+        {{/if}}
+    </div>
+
+    <a href="/">Back to Home</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Squad Details</title>
+    <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+<body class="scheme-3">
+
+<div class="container">
+    <h1>Squad Details</h1>
+
+    <div class="squad-card">
+        <h2>{{squad.name}}</h2>
+        <p>Max Size: {{squad.maxSize}}</p>
+        <p>Cause: {{squad.cause}}</p>
+
+        {{#if hasHeroes}}
+            <h3>Assigned Heroes:</h3>
+            <ul>
+                {{#each heroes}}
+                    <li><a href="/heroes/{{this.id}}">{{this.name}}</a></li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>No heroes assigned to this squad.</p>
+        {{/if}}
+
+        <form action="/squads/{{squad.id}}" method="POST">
+            <button class="button" type="submit">Delete Squad</button>
+        </form>
+    </div>
+
+    <a href="/">Back to Home</a>
+</div>
+
+</body>
+</html>

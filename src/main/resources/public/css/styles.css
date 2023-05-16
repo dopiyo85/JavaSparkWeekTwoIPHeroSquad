@@ -1,20 +1,101 @@
-body {
-  font-family: Arial, sans-serif;
+/* Include Bootstrap CSS */
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css');
+
+/* Color Scheme 1 */
+body.scheme-1 {
+    background-color: #f8f9fa;
+    color: #212529;
+    background-image: url('https://wallpaperaccess.com/full/3891715.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
+/* Color Scheme 2 */
+body.scheme-2 {
+    background-color: #f1f8ff;
+    color: #212529;
+    background-image: url('https://wallpaperaccess.com/full/3891715.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Color Scheme 3 */
+body.scheme-3 {
+    background-color: #f4f9f9;
+    color: #212529;
+    background-image: url('https://wallpaperaccess.com/full/3891715.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Custom Styles */
 h1 {
-  color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
+h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
-li {
-  margin-bottom: 10px;
+.hero-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
-strong {
-  font-weight: bold;
+.squad-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.squad-card .squad-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.squad-card .squad-cause {
+    font-style: italic;
+    margin-bottom: 5px;
+}
+
+.squad-card .squad-members {
+    margin-top: 10px;
+}
+
+.button {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.button-delete {
+    background-color: #dc3545;
+}
+
+.button-delete:hover {
+    background-color: #bd2130;
+}
+
+.button-update {
+    background-color: #ffc107;
+}
+
+.button-update:hover {
+    background-color: #e0a800;
 }
