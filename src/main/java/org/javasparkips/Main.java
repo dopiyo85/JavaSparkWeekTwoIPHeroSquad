@@ -16,13 +16,14 @@ import static spark.Spark.*;
 public class Main {
 
     public static void main(String[] args) {
-        staticFiles.location("/public");
+        // Set the static files location
+        staticFileLocation("/public");
 
         // Set up the Handlebars template engine
         HandlebarsTemplateEngine templateEngine = new HandlebarsTemplateEngine();
 
         // Set up the database connector
-        DatabaseConnector databaseConnector = new DatabaseConnector("jdbc:postgresql://localhost:5432/superhero_recruitment", "postgres", "Glorified30*");
+        DatabaseConnector databaseConnector = new DatabaseConnector();
         databaseConnector.init();
 
         // Set up the HeroDao and SquadDao
@@ -41,10 +42,10 @@ public class Main {
         post("/heroes", (req, res) -> {
             String name = req.queryParams("name");
             int age = Integer.parseInt(req.queryParams("age"));
-            String power = req.queryParams("power");
+            String specialPower = req.queryParams("specialPower");
             String weakness = req.queryParams("weakness");
 
-            Hero hero = new Hero(name, age, power, weakness);
+            Hero hero = new Hero(name, age, specialPower, weakness);
             heroDao.addHero(hero);
 
             res.redirect("/");
@@ -75,19 +76,16 @@ public class Main {
             return null;
         });
 
-        // Serve static CSS and JS files
-        get("/css/*", (req, res) -> {
-            String path = req.pathInfo();
+        // Serve static CSS file
+        get("/css/styles.css", (req, res) -> {
             res.type("text/css");
-            return Main.class.getResourceAsStream("/public" + path);
+            return Main.class.getResourceAsStream("/css/styles.css");
         });
 
-        get("/js/*", (req, res) -> {
-            String path = req.pathInfo();
+        // Serve static JS file
+        get("/js/main.js", (req, res) -> {
             res.type("text/javascript");
-            return Main.class.getResourceAsStream("/public" + path);
+            return Main.class.getResourceAsStream("/js/main.js");
         });
     }
 }
-
-

@@ -2,19 +2,29 @@ package org.javasparkips.utils;
 
 import org.sql2o.Sql2o;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class DatabaseConnector {
-    private final String url;
-    private final String username;
-    private final String password;
     private Sql2o sql2o;
 
-    public DatabaseConnector(String url, String username, String password) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
+    public DatabaseConnector() {
+        // Default constructor
     }
 
     public void init() {
+        Properties properties = new Properties();
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String url = properties.getProperty("db.url");
+        String username = properties.getProperty("db.username");
+        String password = properties.getProperty("db.password");
+
         sql2o = new Sql2o(url, username, password);
     }
 
