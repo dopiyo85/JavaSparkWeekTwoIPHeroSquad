@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
         // Set the static files location
-        staticFileLocation("/public");
+        staticFileLocation("/");
 
         // Set up the Handlebars template engine
         HandlebarsTemplateEngine templateEngine = new HandlebarsTemplateEngine();
