@@ -3,12 +3,12 @@ package org.javasparkips.model;
 public class Squad {
     private int id;
     private String name;
-    private int max_size;
+    private int maxSize;
     private String cause;
 
-    public Squad(String name, int max_size, String cause) {
+    public Squad(String name, int maxSize, String cause) {
         this.name = name;
-        this.max_size = max_size;
+        this.maxSize = maxSize;
         this.cause = cause;
     }
 
@@ -31,11 +31,11 @@ public class Squad {
     }
 
     public int getMaxSize() {
-        return max_size;
+        return maxSize;
     }
 
-    public void setMaxSize(int max_size) {
-        this.max_size = max_size;
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
     }
 
     public String getCause() {

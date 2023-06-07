@@ -14,7 +14,7 @@ body.scheme-1 {
 body.scheme-2 {
     background-color: #f1f8ff;
     color: #212529;
-    background-image: url('https://wallpaperaccess.com/full/3891715.jpg');
+    background-image: url('https://upload.wikimedia.org/wikipedia/en/c/c4/Super_Hero_Squad_Show.jpg');
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -23,22 +23,26 @@ body.scheme-2 {
 body.scheme-3 {
     background-color: #f4f9f9;
     color: #212529;
-    background-image: url('https://wallpaperaccess.com/full/3891715.jpg');
+    background-image: url('https://upload.wikimedia.org/wikipedia/en/d/dc/Marvel-super-hero-squad-cover.jpg');
     background-repeat: no-repeat;
     background-size: cover;
 }
 
 /* Custom Styles */
-h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
+.main-heading-card {
+    background-color: #007bff;
+    padding: 20px;
+    border-radius: 5px;
+    color: white;
 }
 
-h2 {
-    font-size: 20px;
+h1.main-heading {
+    font-size: 32px;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-style: italic;
+    font-family: "Arial", sans-serif;
 }
 
 .hero-card {
@@ -99,3 +103,25 @@ h2 {
 .button-update:hover {
     background-color: #e0a800;
 }
+
+.navbar {
+    background-color: transparent;
+    border: none;
+}
+
+.navbar-dark .navbar-brand {
+    color: #fff;
+}
+
+.navbar-dark .navbar-brand:hover {
+    color: #fff;
+}
+
+.navbar-nav .nav-link {
+    color: #fff;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #fff;
+}
+

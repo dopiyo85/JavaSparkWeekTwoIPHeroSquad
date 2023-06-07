@@ -78,5 +78,26 @@ public class HeroDao {
         return hero;
     }
 
-    // Other methods for retrieving heroes by criteria, finding heroes by name, etc.
+    public void assignHeroToSquad(int heroId, int squadId) {
+        try (Connection connection = sql2o.open()) {
+            String query = "UPDATE heroes SET squadId = :squadId WHERE id = :heroId";
+            connection.createQuery(query)
+                    .addParameter("squadId", squadId)
+                    .addParameter("heroId", heroId)
+                    .executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeHeroFromSquad(int heroId) {
+        try (Connection connection = sql2o.open()) {
+            String query = "UPDATE heroes SET squadId = NULL WHERE id = :heroId";
+            connection.createQuery(query)
+                    .addParameter("heroId", heroId)
+                    .executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

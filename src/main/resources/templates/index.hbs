@@ -3,45 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/styles.css">
+    <style>
+        .transparent-navbar {
+            background-color: transparent !important;
+            border: none;
+        }
+
+        .transparent-navbar .navbar-brand,
+        .transparent-navbar .navbar-nav .nav-link {
+            color: #fff;
+        }
+
+        .transparent-navbar .navbar-brand:hover,
+        .transparent-navbar .navbar-nav .nav-link:hover {
+            color: #fff;
+        }
+
+        .footer {
+            background-color: #161616;
+            color: #fff;
+            padding: 20px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px; /* Adjust the height as needed */
+        }
+
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .footer-icons a {
+            color: #fff;
+            margin: 0 10px;
+            font-size: 20px;
+        }
+
+        .hero-table-card,
+        .squad-table-card {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .add-button-container {
+            text-align: center;
+            position: sticky;
+            bottom: 20px;
+            z-index: 1;
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
     <title>Hero Squad App</title>
 </head>
-<body>
-<h1>Welcome to Hero Squad App!</h1>
+<body class="scheme-1">
+<nav class="navbar navbar-expand-lg transparent-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            &copy; Deedee
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">
+                        Home
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-<h2>Heroes</h2>
-<ul>
-    {{#each heroes}}
-        <li>
-            <strong>Name:</strong> {{name}} <br>
-            <strong>Age:</strong> {{age}} <br>
-            <strong>Special Power:</strong> {{power}} <br>
-            <strong>Weakness:</strong> {{weakness}}
-        </li>
-    {{/each}}
-</ul>
+<div class="container">
+    <div class="main-heading-card">
+        <h1 class="main-heading">Welcome to Hero Squad App!</h1>
+    </div>
 
-<h2>Squads</h2>
-<ul>
-    {{#each squads}}
-        <li>
-            <strong>Name:</strong> {{name}} <br>
-            <strong>Cause:</strong> {{cause}}
-            <form class="assign-hero-form" data-squad-id="{{id}}">
-                <label>
-                    <select name="selectedHeroId">
-                        {{#each heroes}}
-                            <option value="{{id}}">{{name}}</option>
-                        {{/each}}
-                    </select>
-                </label>
-                <button type="submit">Assign Hero</button>
-            </form>
-        </li>
-    {{/each}}
-</ul>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="hero-table-card">
+                <h2 class="section-heading">Heroes</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Power</th>
+                        <th>Weakness</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each heroes}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{age}}</td>
+                            <td>{{power}}</td>
+                            <td>{{weakness}}</td>
+                            <td>
+                                <form action="/heroes/delete/{{this.id}}" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button class="btn btn-danger" type="submit">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="squad-table-card">
+                <h2 class="section-heading">Squads</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Cause</th>
+                        <th>Assign Hero</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each squads}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{cause}}</td>
+                            <td>
+                                <form id="assign-hero-form-{{id}}" action="/squads/{{id}}/heroes/" method="POST" onsubmit="assignHero(event, '{{id}}')">
+                                    <label>
+                                        <select name="selectedHeroId" class="hero-select">
+                                            {{#each availableHeroes}}
+                                                <option value="{{id}}">{{name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </label>
+                                    <button type="submit" class="button button-update assign-button">Assign Hero</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-button-container">
+        <a href="/heroes/" class="button button-update">Add a Hero</a>
+        <a href="/squads" class="button button-update">Add a Squad</a>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="footer-icons">
+                    <a href="https://twitter.com" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="https://facebook.com" class="social-icon"><i class="fab fa-facebook"></i></a>
+                    <a href="https://instagram.com" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <a href="https://github.com/dopiyo85">Github Repository for Diana</a>
+            </div>
+        </div>
+    </div>
+</footer>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/main.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="/public/js/main.js"></script>
+<script src="https://kit.fontawesome.com/b8db771044.js" crossorigin="anonymous"></script>
+<script>
+    function assignHero(event, squadId) {
+        event.preventDefault(); // Prevent form submission
+
+        // Get the selected hero ID from the form
+        var selectedHeroId = document.getElementById('assign-hero-form-' + squadId).querySelector('.hero-select').value;
+
+        // Make an AJAX request to assign the hero to the squad
+        $.ajax({
+            url: '/squads/' + squadId + '/heroes/',
+            method: 'POST',
+            data: { selectedHeroId: selectedHeroId },
+            success: function(response) {
+                // Handle the success response here (e.g., show a success message)
+                console.log(response);
+            },
+            error: function(error) {
+                // Handle the error response here (e.g., show an error message)
+                console.log(error);
+            }
+        });
+    }
+</script>
 </body>
 </html>
