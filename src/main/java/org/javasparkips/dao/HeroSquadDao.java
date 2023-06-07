@@ -14,7 +14,7 @@ public class HeroSquadDao {
     }
 
     public void addAssignment(int squadId, int heroId) {
-        String sql = "INSERT INTO squads_heroes (squad_id, hero_id) VALUES (:squadId, :heroId)";
+        String sql = "INSERT INTO squads_heroes (squadId, heroId) VALUES (:squadId, :heroId)";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("squadId", squadId)
@@ -24,7 +24,7 @@ public class HeroSquadDao {
     }
 
     public void removeAssignment(int squadId, int heroId) {
-        String sql = "DELETE FROM squads_heroes WHERE squad_id = :squadId AND hero_id = :heroId";
+        String sql = "DELETE FROM squads_heroes WHERE squadId = :squadId AND heroId = :heroId";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("squadId", squadId)
@@ -35,7 +35,7 @@ public class HeroSquadDao {
 
     public List<Hero> getAssignedHeroes(int squadId) {
         String sql = "SELECT h.* FROM heroes h " +
-                "JOIN squads_heroes sh ON h.id = sh.hero_id " +
+                "JOIN squads_heroes sh ON h.id = sh.heroId " +
                 "WHERE sh.squad_id = :squadId";
         try (Connection con = sql2o.open()) {
             return con.createQuery(sql)

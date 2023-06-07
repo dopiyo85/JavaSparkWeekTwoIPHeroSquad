@@ -24,8 +24,6 @@
             background-color: #161616;
             color: #fff;
             padding: 20px 0;
-            position: fixed;
-            bottom: 0;
             width: 100%;
             height: 60px; /* Adjust the height as needed */
         }
@@ -100,6 +98,7 @@
                         <th>Power</th>
                         <th>Weakness</th>
                         <th>Delete</th>
+                        <th>Edit</th> <!-- Added 'Edit' column -->
                     </tr>
                     </thead>
                     <tbody>
@@ -116,6 +115,11 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
+                            </td>
+                            <td> <!-- Added 'Edit' button -->
+                                <a href="/heroes/edit/{{this.id}}" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                             </td>
                         </tr>
                     {{/each}}
@@ -141,14 +145,16 @@
                             <td>{{cause}}</td>
                             <td>
                                 <form id="assign-hero-form-{{id}}" action="/squads/{{id}}/heroes/" method="POST" onsubmit="assignHero(event, '{{id}}')">
-                                    <label>
-                                        <select name="selectedHeroId" class="hero-select">
-                                            {{#each availableHeroes}}
-                                                <option value="{{id}}">{{name}}</option>
-                                            {{/each}}
-                                        </select>
-                                    </label>
-                                    <button type="submit" class="button button-update assign-button">Assign Hero</button>
+                                    <div style="display: inline-block;">
+                                        <label>
+                                            <select name="selectedHeroId" class="hero-select" style="padding-left: 40px; padding-right: 40px; width: 150px; max-height: 200px; overflow-y: auto;">
+                                                {{#each availableHeroes}}
+                                                    <option value="{{this.id}}">{{this.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </label>
+                                        <button type="submit" class="button button-update assign-button">Assign Hero</button>
+                                    </div>
                                 </form>
                             </td>
                         </tr>

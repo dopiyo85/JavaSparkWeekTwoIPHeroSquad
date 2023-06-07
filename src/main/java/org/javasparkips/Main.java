@@ -108,10 +108,29 @@ public class Main {
             return null;
         });
 
+        // Route handler for rendering the squads page
+        get("/squads", (request, response) -> {
+            List<Squad> squads = squadDao.getAllSquads();
+            List<Hero> availableHeroes = heroDao.getAllHeroes();
+            Map<String, Object> model = new HashMap<>();
+            model.put("squads", squads);
+            model.put("availableHeroes", availableHeroes);
+            return new ModelAndView(model, "squads.hbs");
+        }, templateEngine);
+
+        // Route handler for rendering the heroes page
+        get("/heroes", (request, response) -> {
+            List<Hero> heroes = heroDao.getAllHeroes();
+            Map<String, Object> model = new HashMap<>();
+            model.put("heroes", heroes);
+            return new ModelAndView(model, "heroes.hbs");
+        }, templateEngine);
+
+
         // API endpoints
         path("/api", () -> {
             // Endpoint to assign a hero to a squad
-            post("/squads/:squadId/heroes/:heroId", (request, response) -> {
+            post("/api/squads/:squadId/heroes/:heroId", (request, response) -> {
                 int squadId = Integer.parseInt(request.params("squadId"));
                 int heroId = Integer.parseInt(request.params("heroId"));
                 heroDao.assignHeroToSquad(heroId, squadId);
@@ -121,7 +140,7 @@ public class Main {
             });
 
             // Endpoint to remove a hero from a squad
-            delete("/squads/:squadId/heroes/:heroId", (request, response) -> {
+            delete("/api/squads/:squadId/heroes/:heroId", (request, response) -> {
                 int squadId = Integer.parseInt(request.params("squadId"));
                 int heroId = Integer.parseInt(request.params("heroId"));
                 heroDao.removeHeroFromSquad(heroId);
@@ -131,14 +150,75 @@ public class Main {
             });
 
             // Endpoint to get assigned heroes for a squad
-            get("/squads/:squadId/heroes", (request, response) -> {
+            get("/api/squads/:squadId/heroes", (request, response) -> {
                 int squadId = Integer.parseInt(request.params("squadId"));
                 List<Hero> assignedHeroes = heroSquadDao.getAssignedHeroes(squadId);
                 Map<String, Object> model = new HashMap<>();
                 model.put("heroes", assignedHeroes);
-                return new ModelAndView(model, "squads.hbs");
+                return new ModelAndView(model, "heroes.hbs");
             }, templateEngine);
         });
+
+        // Route handler for editing a hero
+        get("/heroes/edit/:id", (req, res) -> {
+            int heroId = Integer.parseInt(req.params(":id"));
+            Hero hero = heroDao.findHeroById(heroId);
+
+            if (hero != null) {
+                Map<String, Object> model = new HashMap<>();
+                model.put("hero", hero);
+                model.put("id", heroId);
+                return new ModelAndView(model, "heroes.hbs");
+            } else {
+                // Hero not found, handle the error or redirect to an error page
+                res.redirect("/error");
+                return null;
+            }
+        }, templateEngine);
+
+        post("/heroes/edit/:id", (req, res) -> {
+            int heroId = Integer.parseInt(req.params(":id"));
+
+            // Retrieve the updated hero details from the form
+            String name = req.queryParams("name");
+            String ageParam = req.queryParams("age");
+            String power = req.queryParams("power");
+            String weakness = req.queryParams("weakness");
+
+            // Perform any necessary validation or error handling
+            if (name == null || ageParam == null || power == null || weakness == null) {
+                // Handle the error here
+                Map<String, Object> model = new HashMap<>();
+                model.put("error", "Invalid form data");
+                return new ModelAndView(model, "error.hbs");
+            }
+
+            // Convert age to an integer
+            int age;
+            try {
+                age = Integer.parseInt(ageParam);
+            } catch (NumberFormatException e) {
+                // Handle the error here
+                Map<String, Object> model = new HashMap<>();
+                model.put("error", "Invalid age value");
+                return new ModelAndView(model, "error.hbs");
+            }
+
+            // Update the hero details in the database
+            Hero hero = heroDao.findHeroById(heroId);
+            if (hero != null) {
+                hero.setName(name);
+                hero.setAge(age);
+                hero.setPower(power);
+                hero.setWeakness(weakness);
+                heroDao.updateHero(hero);
+            }
+
+            res.redirect("/");
+            return null;
+        });
+
+
 
         // Serve static CSS file
         get("/css/styles.css", (req, res) -> {
