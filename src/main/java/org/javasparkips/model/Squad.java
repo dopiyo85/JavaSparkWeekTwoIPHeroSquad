@@ -5,14 +5,17 @@ public class Squad {
     private String name;
     private int maxSize;
     private String cause;
+    private boolean active;
+    private int currentSize;
+
+    public Squad() {
+    }
 
     public Squad(String name, int maxSize, String cause) {
         this.name = name;
         this.maxSize = maxSize;
         this.cause = cause;
     }
-
-    // Add getters and setters
 
     public int getId() {
         return id;
@@ -44,5 +47,20 @@ public class Squad {
 
     public void setCause(String cause) {
         this.cause = cause;
+    }
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public int getCurrentSize() {
+        return currentSize;
+    }
+
+    public void setCurrentSize(int currentSize) {
+        this.currentSize = currentSize;
     }
 }

@@ -112,6 +112,43 @@
                 </div>
             </div>
         </div>
+        <br>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-10 card-container text-center">
+                    <div class="card">
+                        <div class="card-body sky-blue-container">
+                            <h2>Edit Squad</h2>
+                            <form class="edit-squad-form" action="/squads/edit/{{id}}" method="POST">
+                                <div class="row justify-content-center">
+                                    <div class="col-6">
+                                        <table class="table">
+                                            <tr>
+                                                <td><label for="name">Name:</label></td>
+                                                <td><input type="text" id="name" name="name" value="{{squad.name}}" class="form-control" required></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="maxSize">Max Size:</label></td>
+                                                <td><input type="number" id="maxSize" name="maxSize" value="{{squad.maxSize}}" class="form-control" required></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="cause">Cause:</label></td>
+                                                <td><input type="text" id="cause" name="cause" value="{{squad.cause}}" class="form-control" required></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <input type="hidden" name="id" value="{{id}}">
+                                                    <button type="submit" class="btn btn-primary">Update Squad</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <div class="back-to-home text-center">
             <a href="/">Back to Home</a>
         </div>

@@ -37,14 +37,14 @@ public class Main {
         get("/", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             model.put("heroes", heroDao.getAllHeroes());
-            model.put("squads", squadDao.getAllSquads());
+            model.put("squads", squadDao.getActiveSquads());
             return new ModelAndView(model, "index.hbs");
         }, templateEngine);
 
         // Add a squad route
         get("/squads", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
-            model.put("squads", squadDao.getAllSquads());
+            model.put("squads", squadDao.getActiveSquads());
             return new ModelAndView(model, "squads.hbs");
         }, templateEngine);
 
@@ -70,6 +70,65 @@ public class Main {
             return null;
         });
 
+        // Edit a squad route
+        get("/squads/edit/:id", (req, res) -> {
+            int squadId = Integer.parseInt(req.params(":id"));
+            Squad squad = squadDao.findSquadById(squadId);
+
+            if (squad != null) {
+                Map<String, Object> model = new HashMap<>();
+                model.put("squad", squad);
+                model.put("id", squadId);
+                return new ModelAndView(model, "squads.hbs");
+            } else {
+                res.redirect("/squads?error=squad_not_found");
+                return null;
+            }
+        }, templateEngine);
+
+        // Handle form submission for editing a squad
+        post("/squads/edit/:id", (req, res) -> {
+            int squadId = Integer.parseInt(req.params(":id"));
+            Squad squad = squadDao.findSquadById(squadId);
+
+            if (squad != null) {
+                String name = req.queryParams("name");
+                String maxSizeStr = req.queryParams("maxSize");
+                String cause = req.queryParams("cause");
+                int maxSize;
+
+                try {
+                    maxSize = Integer.parseInt(maxSizeStr);
+                } catch (NumberFormatException e) {
+                    res.redirect("/squads?error=invalid_max_size");
+                    return null;
+                }
+
+                squad.setName(name);
+                squad.setMaxSize(maxSize);
+                squad.setCause(cause);
+                squadDao.updateSquad(squadId, squad);
+
+                res.redirect("/squads");
+            } else {
+                res.redirect("/squads?error=squad_not_found");
+            }
+            return null;
+        });
+
+        // Delete a squad route
+        post("/squads/delete/:id", (req, res) -> {
+            int squadId = Integer.parseInt(req.params(":id"));
+            Squad squad = squadDao.findSquadById(squadId);
+
+            if (squad != null) {
+                squadDao.deleteSquad(squadId);
+            }
+
+            res.redirect("/");
+            return null;
+        });
+
         // Add a hero route
         get("/heroes/", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
@@ -83,6 +142,8 @@ public class Main {
             String ageParam = req.queryParams("age");
             String power = req.queryParams("power");
             String weakness = req.queryParams("weakness");
+            String power_scoreParam = req.queryParams("power_score");
+            String weakness_scoreParam = req.queryParams("weakness_score");
 
             int age;
             try {
@@ -92,22 +153,43 @@ public class Main {
                 return null;
             }
 
+            int power_score;
+            try {
+                power_score = Integer.parseInt(power_scoreParam);
+            } catch (NumberFormatException e) {
+                res.redirect("/heroes?error=invalid_power_score");
+                return null;
+            }
+
+            int weakness_score;
+            try {
+                weakness_score = Integer.parseInt(weakness_scoreParam);
+            } catch (NumberFormatException e) {
+                res.redirect("/heroes?error=invalid_weakness_score");
+                return null;
+            }
+
             Hero hero = new Hero(name, age, power, weakness);
+            hero.setPower_score(power_score);
+            hero.setWeakness_score(weakness_score);
             heroDao.addHero(hero);
 
             res.redirect("/");
             return null;
         });
 
-        // Handle form submission for deleting a hero
+        // Handle deleting a hero
         post("/heroes/delete/:id", (req, res) -> {
             int heroId = Integer.parseInt(req.params(":id"));
-            heroDao.deleteHero(heroId);
+            Hero hero = heroDao.findActiveHeroById(heroId);
+
+            if (hero != null) {
+                heroDao.deleteHero(heroId);
+            }
 
             res.redirect("/");
             return null;
         });
-
         // Route handler for rendering the squads page
         get("/squads", (request, response) -> {
             List<Squad> squads = squadDao.getAllSquads();
@@ -126,43 +208,10 @@ public class Main {
             return new ModelAndView(model, "heroes.hbs");
         }, templateEngine);
 
-
-        // API endpoints
-        path("/api", () -> {
-            // Endpoint to assign a hero to a squad
-            post("/api/squads/:squadId/heroes/:heroId", (request, response) -> {
-                int squadId = Integer.parseInt(request.params("squadId"));
-                int heroId = Integer.parseInt(request.params("heroId"));
-                heroDao.assignHeroToSquad(heroId, squadId);
-                heroSquadDao.addAssignment(squadId, heroId);
-                response.status(200);
-                return "Hero assigned to squad.";
-            });
-
-            // Endpoint to remove a hero from a squad
-            delete("/api/squads/:squadId/heroes/:heroId", (request, response) -> {
-                int squadId = Integer.parseInt(request.params("squadId"));
-                int heroId = Integer.parseInt(request.params("heroId"));
-                heroDao.removeHeroFromSquad(heroId);
-                heroSquadDao.removeAssignment(squadId, heroId);
-                response.status(200);
-                return "Hero removed from squad.";
-            });
-
-            // Endpoint to get assigned heroes for a squad
-            get("/api/squads/:squadId/heroes", (request, response) -> {
-                int squadId = Integer.parseInt(request.params("squadId"));
-                List<Hero> assignedHeroes = heroSquadDao.getAssignedHeroes(squadId);
-                Map<String, Object> model = new HashMap<>();
-                model.put("heroes", assignedHeroes);
-                return new ModelAndView(model, "heroes.hbs");
-            }, templateEngine);
-        });
-
         // Route handler for editing a hero
         get("/heroes/edit/:id", (req, res) -> {
             int heroId = Integer.parseInt(req.params(":id"));
-            Hero hero = heroDao.findHeroById(heroId);
+            Hero hero = heroDao.findActiveHeroById(heroId);
 
             if (hero != null) {
                 Map<String, Object> model = new HashMap<>();
@@ -170,66 +219,121 @@ public class Main {
                 model.put("id", heroId);
                 return new ModelAndView(model, "heroes.hbs");
             } else {
-                // Hero not found, handle the error or redirect to an error page
-                res.redirect("/error");
+                res.redirect("/heroes?error=hero_not_found");
                 return null;
             }
         }, templateEngine);
 
+        // Handle form submission for editing a hero
         post("/heroes/edit/:id", (req, res) -> {
             int heroId = Integer.parseInt(req.params(":id"));
+            Hero hero = heroDao.findActiveHeroById(heroId);
 
-            // Retrieve the updated hero details from the form
-            String name = req.queryParams("name");
-            String ageParam = req.queryParams("age");
-            String power = req.queryParams("power");
-            String weakness = req.queryParams("weakness");
-
-            // Perform any necessary validation or error handling
-            if (name == null || ageParam == null || power == null || weakness == null) {
-                // Handle the error here
-                Map<String, Object> model = new HashMap<>();
-                model.put("error", "Invalid form data");
-                return new ModelAndView(model, "error.hbs");
-            }
-
-            // Convert age to an integer
-            int age;
-            try {
-                age = Integer.parseInt(ageParam);
-            } catch (NumberFormatException e) {
-                // Handle the error here
-                Map<String, Object> model = new HashMap<>();
-                model.put("error", "Invalid age value");
-                return new ModelAndView(model, "error.hbs");
-            }
-
-            // Update the hero details in the database
-            Hero hero = heroDao.findHeroById(heroId);
             if (hero != null) {
+                String name = req.queryParams("name");
+                String ageParam = req.queryParams("age");
+                String power = req.queryParams("power");
+                String weakness = req.queryParams("weakness");
+                String power_scoreParam = req.queryParams("power_score");
+                String weakness_scoreParam = req.queryParams("weakness_score");
+
+                int age;
+                try {
+                    age = Integer.parseInt(ageParam);
+                } catch (NumberFormatException e) {
+                    res.redirect("/heroes?error=invalid_age");
+                    return null;
+                }
+
+                int power_score;
+                try {
+                    power_score = Integer.parseInt(power_scoreParam);
+                } catch (NumberFormatException e) {
+                    res.redirect("/heroes?error=invalid_power_score");
+                    return null;
+                }
+
+                int weakness_score;
+                try {
+                    weakness_score = Integer.parseInt(weakness_scoreParam);
+                } catch (NumberFormatException e) {
+                    res.redirect("/heroes?error=invalid_weakness_score");
+                    return null;
+                }
+
                 hero.setName(name);
                 hero.setAge(age);
                 hero.setPower(power);
                 hero.setWeakness(weakness);
+                hero.setPower_score(power_score);
+                hero.setWeakness_score(weakness_score);
                 heroDao.updateHero(hero);
-            }
 
-            res.redirect("/");
+                res.redirect("/heroes");
+            } else {
+                res.redirect("/heroes?error=hero_not_found");
+            }
+            return null;
+        });
+
+        // Assign a hero to a squad
+        post("/squads/:squadId/heroes/:heroId/assign", (req, res) -> {
+            int squadId = Integer.parseInt(req.params("squadId"));
+            int heroId = Integer.parseInt(req.params("heroId"));
+
+            Squad squad = squadDao.findSquadById(squadId);
+            Hero hero = heroDao.findActiveHeroById(heroId);
+
+            if (squad != null && hero != null) {
+                // Check if the squad has reached its maximum size
+                if (squad.getCurrentSize() >= squad.getMaxSize()) {
+                    // Handle the error here (squad is full)
+                    Map<String, Object> model = new HashMap<>();
+                    model.put("error", "Squad is full");
+                    return new ModelAndView(model, "error.hbs");
+                }
+
+                // Assign the hero to the squad
+                hero.setSquadId(squadId);
+                heroDao.updateHero(hero);
+
+                // Update the current size of the squad
+                squad.setCurrentSize(squad.getCurrentSize() + 1);
+                squadDao.updateSquad(squadId, squad);
+
+                res.redirect("/squads");
+            } else {
+                // Handle the error here (squad or hero not found)
+                res.redirect("/squads?error=squad_or_hero_not_found");
+            }
+            return null;
+        });
+
+        // Remove a hero from a squad
+        post("/squads/:squadId/heroes/:heroId/remove", (req, res) -> {
+            int squadId = Integer.parseInt(req.params("squadId"));
+            int heroId = Integer.parseInt(req.params("heroId"));
+
+            Squad squad = squadDao.findSquadById(squadId);
+            Hero hero = heroDao.findActiveHeroById(heroId);
+
+            if (squad != null && hero != null) {
+                // Remove the hero from the squad
+                hero.setSquadId(0);
+                heroDao.updateHero(hero);
+
+                // Update the current size of the squad
+                squad.setCurrentSize(squad.getCurrentSize() - 1);
+                squadDao.updateSquad(squadId, squad);
+
+                res.redirect("/squads");
+            } else {
+                // Handle the error here (squad or hero not found)
+                res.redirect("/squads?error=squad_or_hero_not_found");
+            }
             return null;
         });
 
 
-
-        // Serve static CSS file
-        get("/css/styles.css", (req, res) -> {
-            res.type("text/css");
-            return Main.class.getResourceAsStream("/css/styles.css");
-        });
-
-        // Serve static JS file
-        get("/js/main.js", (req, res) -> {
-            res.type("text/javascript");
-            return Main.class.getResourceAsStream("/js/main.js");
-        });
     }
 }

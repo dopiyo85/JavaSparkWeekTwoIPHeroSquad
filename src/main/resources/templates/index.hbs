@@ -98,7 +98,7 @@
                         <th>Power</th>
                         <th>Weakness</th>
                         <th>Delete</th>
-                        <th>Edit</th> <!-- Added 'Edit' column -->
+                        <th>Edit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -136,6 +136,8 @@
                         <th>Name</th>
                         <th>Cause</th>
                         <th>Assign Hero</th>
+                        <th>Delete</th>
+                        <th>Edit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -148,7 +150,7 @@
                                     <div style="display: inline-block;">
                                         <label>
                                             <select name="selectedHeroId" class="hero-select" style="padding-left: 40px; padding-right: 40px; width: 150px; max-height: 200px; overflow-y: auto;">
-                                                {{#each availableHeroes}}
+                                                {{#each activeHeroes}}
                                                     <option value="{{this.id}}">{{this.name}}</option>
                                                 {{/each}}
                                             </select>
@@ -156,6 +158,19 @@
                                         <button type="submit" class="button button-update assign-button">Assign Hero</button>
                                     </div>
                                 </form>
+                            </td>
+                            <td>
+                                <form action="/squads/delete/{{this.id}}" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button class="btn btn-danger" type="submit">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <a href="/squads/edit/{{this.id}}" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                             </td>
                         </tr>
                     {{/each}}

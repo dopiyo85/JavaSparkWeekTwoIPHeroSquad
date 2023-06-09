@@ -27,12 +27,15 @@ public class HeroDao {
 
     public void addHero(Hero hero) {
         try (Connection connection = sql2o.open()) {
-            String query = "INSERT INTO heroes (name, age, power, weakness) VALUES (:name, :age, :power, :weakness)";
+            String query = "INSERT INTO heroes (name, age, power, weakness, power_score, weakness_score) " +
+                    "VALUES (:name, :age, :power, :weakness, :power_score, :weakness_score)";
             connection.createQuery(query)
                     .addParameter("name", hero.getName())
                     .addParameter("age", hero.getAge())
                     .addParameter("power", hero.getPower())
                     .addParameter("weakness", hero.getWeakness())
+                    .addParameter("power_score", hero.getPower_score())
+                    .addParameter("weakness_score", hero.getWeakness_score())
                     .executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,12 +44,15 @@ public class HeroDao {
 
     public void updateHero(Hero hero) {
         try (Connection connection = sql2o.open()) {
-            String query = "UPDATE heroes SET name = :name, age = :age, power = :power, weakness = :weakness WHERE id = :id";
+            String query = "UPDATE heroes SET name = :name, age = :age, power = :power, weakness = :weakness, " +
+                    "power_score = :power_score, weakness_score = :weakness_score WHERE id = :id";
             connection.createQuery(query)
                     .addParameter("name", hero.getName())
                     .addParameter("age", hero.getAge())
                     .addParameter("power", hero.getPower())
                     .addParameter("weakness", hero.getWeakness())
+                    .addParameter("power_score", hero.getPower_score())
+                    .addParameter("weakness_score", hero.getWeakness_score())
                     .addParameter("id", hero.getId())
                     .executeUpdate();
         } catch (Exception e) {
@@ -56,7 +62,7 @@ public class HeroDao {
 
     public void deleteHero(int id) {
         try (Connection connection = sql2o.open()) {
-            String query = "DELETE FROM heroes WHERE id = :id";
+            String query = "UPDATE heroes SET active = false WHERE id = :id";
             connection.createQuery(query)
                     .addParameter("id", id)
                     .executeUpdate();
@@ -65,10 +71,10 @@ public class HeroDao {
         }
     }
 
-    public Hero findHeroById(int id) {
+    public Hero findActiveHeroById(int id) {
         Hero hero = null;
         try (Connection connection = sql2o.open()) {
-            String query = "SELECT * FROM heroes WHERE id = :id";
+            String query = "SELECT * FROM heroes WHERE id = :id AND active = true";
             hero = connection.createQuery(query)
                     .addParameter("id", id)
                     .executeAndFetchFirst(Hero.class);
@@ -77,7 +83,6 @@ public class HeroDao {
         }
         return hero;
     }
-
     public void assignHeroToSquad(int heroId, int squadId) {
         try (Connection connection = sql2o.open()) {
             String query = "UPDATE heroes SET squadId = :squadId WHERE id = :heroId";

@@ -4,6 +4,7 @@ import org.javasparkips.model.Hero;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HeroSquadDao {
@@ -43,4 +44,23 @@ public class HeroSquadDao {
                     .executeAndFetch(Hero.class);
         }
     }
+
+    public Hero[] findActiveHeroesByIds(int[] ids) {
+        List<Hero> activeHeroes = new ArrayList<>();
+        try (Connection connection = sql2o.open()) {
+            String query = "SELECT * FROM heroes WHERE id IN (:ids) AND active = true";
+            List<Hero> heroes = connection.createQuery(query)
+                    .addParameter("ids", ids)
+                    .executeAndFetch(Hero.class);
+            activeHeroes.addAll(heroes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return activeHeroes.toArray(new Hero[0]);
+    }
+
 }
+
+
+
+

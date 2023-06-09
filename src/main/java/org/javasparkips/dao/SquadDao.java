@@ -36,28 +36,36 @@ public class SquadDao {
     }
 
     public void deleteSquad(int id) {
-        String sql = "DELETE FROM squads WHERE id = :id";
+        String sql = "UPDATE squads SET active = false WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("id", id)
                     .executeUpdate();
         }
     }
-
-    public void updateSquad(int id, Squad squad) {
-        String sql = "UPDATE squads SET name = :name, maxSize = :maxSize, cause = :cause WHERE id = :id";
-        try (Connection con = sql2o.open()) {
-            con.createQuery(sql)
+    public List<Squad> getActiveSquads() {
+        try (Connection conn = sql2o.open()) {
+            String sql = "SELECT * FROM squads WHERE active = true";
+            return conn.createQuery(sql).executeAndFetch(Squad.class);
+        }
+    }
+    public void updateSquad(int squadId, Squad squad) {
+        try (Connection conn = sql2o.open()) {
+            String sql = "UPDATE squads SET name = :name, maxSize = :maxSize, cause = :cause, active = :active WHERE id = :id";
+            conn.createQuery(sql)
+                    .addParameter("id", squadId)
                     .addParameter("name", squad.getName())
                     .addParameter("maxSize", squad.getMaxSize())
                     .addParameter("cause", squad.getCause())
-                    .addParameter("id", id)
+                    .addParameter("active", squad.isActive()) // Set the active field based on squad's active status
                     .executeUpdate();
         }
     }
 
+
+
     public Squad findSquadById(int id) {
-        String sql = "SELECT * FROM squads WHERE id = :id";
+        String sql = "SELECT * FROM squads WHERE id = :id AND active = true";
         try (Connection con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("id", id)
@@ -76,6 +84,4 @@ public class SquadDao {
     public List<Hero> getAssignedHeroes(int squadId) {
         return heroSquadDao.getAssignedHeroes(squadId);
     }
-
 }
-

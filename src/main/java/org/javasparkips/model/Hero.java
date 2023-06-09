@@ -7,13 +7,18 @@ public class Hero {
     private String power;
     private String weakness;
     private int squadId;
+    private int power_score;
+    private int weakness_score;
+    private boolean active;
 
     public Hero(String name, int age, String power, String weakness) {
         this.name = name;
         this.age = age;
         this.power = power;
         this.weakness = weakness;
+
     }
+
     // Add getters and setters
 
     public int getId() {
@@ -55,11 +60,36 @@ public class Hero {
     public void setWeakness(String weakness) {
         this.weakness = weakness;
     }
+
     public int getSquadId() {
         return squadId;
     }
 
     public void setSquadId(int squadId) {
         this.squadId = squadId;
+    }
+
+    public int getPower_score() {
+        return power_score;
+    }
+
+    public void setPower_score(int power_score) {
+        this.power_score = power_score;
+    }
+
+    public int getWeakness_score() {
+        return weakness_score;
+    }
+
+    public void setWeakness_score(int weakness_score) {
+        this.weakness_score = weakness_score;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
