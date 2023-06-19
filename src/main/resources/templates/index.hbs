@@ -146,11 +146,11 @@
                             <td>{{name}}</td>
                             <td>{{cause}}</td>
                             <td>
-                                <form id="assign-hero-form-{{id}}" action="/squads/{{id}}/heroes/" method="POST" onsubmit="assignHero(event, '{{id}}')">
+                                <form id="assign-hero-form-{{id}}" action="/squads/{{id}}/heroes/{{id}}/assign" method="POST">
                                     <div style="display: inline-block;">
                                         <label>
                                             <select name="selectedHeroId" class="hero-select" style="padding-left: 40px; padding-right: 40px; width: 150px; max-height: 200px; overflow-y: auto;">
-                                                {{#each activeHeroes}}
+                                                {{#each heroes}}
                                                     <option value="{{this.id}}">{{this.name}}</option>
                                                 {{/each}}
                                             </select>
@@ -207,28 +207,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 <script src="/public/js/main.js"></script>
 <script src="https://kit.fontawesome.com/b8db771044.js" crossorigin="anonymous"></script>
-<script>
-    function assignHero(event, squadId) {
-        event.preventDefault(); // Prevent form submission
-
-        // Get the selected hero ID from the form
-        var selectedHeroId = document.getElementById('assign-hero-form-' + squadId).querySelector('.hero-select').value;
-
-        // Make an AJAX request to assign the hero to the squad
-        $.ajax({
-            url: '/squads/' + squadId + '/heroes/',
-            method: 'POST',
-            data: { selectedHeroId: selectedHeroId },
-            success: function(response) {
-                // Handle the success response here (e.g., show a success message)
-                console.log(response);
-            },
-            error: function(error) {
-                // Handle the error response here (e.g., show an error message)
-                console.log(error);
-            }
-        });
-    }
-</script>
 </body>
 </html>

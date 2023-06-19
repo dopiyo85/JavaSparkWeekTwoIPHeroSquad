@@ -17,7 +17,7 @@ public class HeroDao {
     public List<Hero> getAllHeroes() {
         List<Hero> heroes = new ArrayList<>();
         try (Connection connection = sql2o.open()) {
-            String query = "SELECT * FROM heroes";
+            String query = "SELECT * FROM heroes WHERE active = true";
             heroes = connection.createQuery(query).executeAndFetch(Hero.class);
         } catch (Exception e) {
             e.printStackTrace();

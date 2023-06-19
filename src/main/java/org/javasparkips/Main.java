@@ -41,11 +41,14 @@ public class Main {
             return new ModelAndView(model, "index.hbs");
         }, templateEngine);
 
-        // Add a squad route
-        get("/squads", (req, res) -> {
+
+        get("/squads", (request, response) -> {
+            List<Squad> squads = squadDao.getActiveSquads();
+            List<Hero> heroes = heroDao.getAllHeroes(); // Add this line
             Map<String, Object> model = new HashMap<>();
-            model.put("squads", squadDao.getActiveSquads());
-            return new ModelAndView(model, "squads.hbs");
+            model.put("squads", squads);
+            model.put("heroes", heroes); // Add this line
+            return new ModelAndView(model, "index.hbs"); // Change the template name if necessary
         }, templateEngine);
 
         post("/squads/add/", (req, res) -> {
@@ -149,24 +152,36 @@ public class Main {
             try {
                 age = Integer.parseInt(ageParam);
             } catch (NumberFormatException e) {
-                res.redirect("/heroes?error=invalid_age");
-                return null;
+                System.out.println("Invalid age: " + ageParam);
+                return "Invalid age";
             }
 
-            int power_score;
-            try {
-                power_score = Integer.parseInt(power_scoreParam);
-            } catch (NumberFormatException e) {
-                res.redirect("/heroes?error=invalid_power_score");
-                return null;
+            int power_score = 0; // Default value
+            if (power_scoreParam != null) {
+                try {
+                    power_score = Integer.parseInt(power_scoreParam);
+                    if (power_score < 0 || power_score > 100) {
+                        power_score = 0; // Set a default value or handle the error differently
+                        System.out.println("Invalid power score range: " + power_scoreParam);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid power score: " + power_scoreParam);
+                    return "Invalid power score";
+                }
             }
 
-            int weakness_score;
-            try {
-                weakness_score = Integer.parseInt(weakness_scoreParam);
-            } catch (NumberFormatException e) {
-                res.redirect("/heroes?error=invalid_weakness_score");
-                return null;
+            int weakness_score = 0; // Default value
+            if (weakness_scoreParam != null) {
+                try {
+                    weakness_score = Integer.parseInt(weakness_scoreParam);
+                    if (weakness_score < 0 || weakness_score > 100) {
+                        weakness_score = 0; // Set a default value or handle the error differently
+                        System.out.println("Invalid weakness score range: " + weakness_scoreParam);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid weakness score: " + weakness_scoreParam);
+                    return "Invalid weakness score";
+                }
             }
 
             Hero hero = new Hero(name, age, power, weakness);
@@ -175,8 +190,9 @@ public class Main {
             heroDao.addHero(hero);
 
             res.redirect("/");
-            return null;
+            return "Hero added successfully";
         });
+
 
         // Handle deleting a hero
         post("/heroes/delete/:id", (req, res) -> {
@@ -196,7 +212,7 @@ public class Main {
             List<Hero> availableHeroes = heroDao.getAllHeroes();
             Map<String, Object> model = new HashMap<>();
             model.put("squads", squads);
-            model.put("availableHeroes", availableHeroes);
+            model.put("activeHeroes", availableHeroes); // Change the key to "activeHeroes"
             return new ModelAndView(model, "squads.hbs");
         }, templateEngine);
 
@@ -273,13 +289,14 @@ public class Main {
             } else {
                 res.redirect("/heroes?error=hero_not_found");
             }
-            return null;
+            res.redirect("/");
+            return "Hero Edited Successfully";
         });
 
         // Assign a hero to a squad
         post("/squads/:squadId/heroes/:heroId/assign", (req, res) -> {
             int squadId = Integer.parseInt(req.params("squadId"));
-            int heroId = Integer.parseInt(req.params("heroId"));
+            int heroId = Integer.parseInt(req.queryParams("selectedHeroId"));
 
             Squad squad = squadDao.findSquadById(squadId);
             Hero hero = heroDao.findActiveHeroById(heroId);
@@ -295,7 +312,7 @@ public class Main {
 
                 // Assign the hero to the squad
                 hero.setSquadId(squadId);
-                heroDao.updateHero(hero);
+                heroDao.assignHeroToSquad(heroId, squadId);
 
                 // Update the current size of the squad
                 squad.setCurrentSize(squad.getCurrentSize() + 1);
@@ -312,7 +329,7 @@ public class Main {
         // Remove a hero from a squad
         post("/squads/:squadId/heroes/:heroId/remove", (req, res) -> {
             int squadId = Integer.parseInt(req.params("squadId"));
-            int heroId = Integer.parseInt(req.params("heroId"));
+            int heroId = Integer.parseInt(req.queryParams("selectedHeroId"));
 
             Squad squad = squadDao.findSquadById(squadId);
             Hero hero = heroDao.findActiveHeroById(heroId);
