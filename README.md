@@ -1,6 +1,6 @@
 # Diana's Hero Squad Game Using Java Program
 
-This project is about Caesar Cipher Using Java Program.
+This project is about Hero Squad Game Using Java Program.
 
 Version Date: 12th May 2023
 
@@ -8,7 +8,7 @@ By Diana Opiyo
 
 ## Description
 
-This project is my week one Java Spark IP about a Hero Squad Game
+This project is my week Two Java Spark IP about a Hero Squad Game
 
 A Hero Squad game is an interactive game where players have the opportunity to recruit and assemble a team of superheroes to combat various challenges and enemies. The game revolves around the concept of creating a well-balanced team of superheroes, each with unique abilities and weaknesses, to overcome obstacles and accomplish missions.
 
